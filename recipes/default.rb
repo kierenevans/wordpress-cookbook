@@ -111,12 +111,14 @@ if platform?('windows')
     action [:add,:start]
   end
 else
+  require 'chef/version_constraint'
   web_app "wordpress" do
     template "wordpress.conf.erb"
     docroot node['wordpress']['dir']
     server_name node['wordpress']['server_name']
     server_aliases node['wordpress']['server_aliases']
     server_port node['apache']['listen_ports']
+    isRewriteLog Chef::VersionConstraint.new("< 2.4").include?(node['apache']['version'])
     enable true
   end
 end
